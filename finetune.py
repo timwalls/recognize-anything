@@ -189,8 +189,8 @@ def main(args, config):
     data_loader = create_loader(datasets,samplers,batch_size=[config['batch_size']], num_workers=[4], is_trains=[True], collate_fns=[None])[0]      
     
     print("Creating model")
-    if args.checkpoint:  
-        print("load from:", args.checkpoint)
+    if args.recogniser_checkpoint:
+        print("load from:", args.recogniser_checkpoint)
 
     #### Model #### 
     if args.model_type == 'ram_plus':
@@ -198,21 +198,21 @@ def main(args, config):
         model_clip, _ = clip.load("ViT-B/16", device=device)
 
         print("Creating RAM model")
-        model = ram_plus(pretrained = args.checkpoint,image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'], 
-                                vit_ckpt_layer=config['vit_ckpt_layer'])
+        model = ram_plus(pretrained = args.recogniser_checkpoint, image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'],
+                         vit_ckpt_layer=config['vit_ckpt_layer'])
 
     elif args.model_type == 'ram':
         print("Creating pretrained CLIP model")
         model_clip, _ = clip.load("ViT-B/16", device=device)
         
         print("Creating RAM model")
-        model = ram(pretrained = args.checkpoint,image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'], 
-                                vit_ckpt_layer=config['vit_ckpt_layer'])
+        model = ram(pretrained = args.recogniser_checkpoint, image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'],
+                    vit_ckpt_layer=config['vit_ckpt_layer'])
 
     elif args.model_type == 'tag2text':
         print("Creating Tag2Text model")
-        model = tag2text(pretrained = args.checkpoint,image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'], 
-                                vit_ckpt_layer=config['vit_ckpt_layer'], tag_list='ram/data/ram_tag_list.txt')
+        model = tag2text(pretrained = args.recogniser_checkpoint, image_size=config['image_size'], vit=config['vit'], vit_grad_ckpt=config['vit_grad_ckpt'],
+                         vit_ckpt_layer=config['vit_ckpt_layer'], tag_list='ram/data/ram_tag_list.txt')
     model = model.to(device)   
     
     ### Frozen label embedding for open-set recogniztion ###

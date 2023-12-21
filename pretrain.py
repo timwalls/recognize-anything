@@ -224,14 +224,14 @@ def main(args, config):
     optimizer = torch.optim.AdamW(filter(lambda x: x.requires_grad, model.parameters()), lr=config['init_lr'], weight_decay=config['weight_decay'])
     
     start_epoch = 0
-    if args.checkpoint:    
-        checkpoint = torch.load(args.checkpoint, map_location='cpu') 
+    if args.recogniser_checkpoint:
+        checkpoint = torch.load(args.recogniser_checkpoint, map_location='cpu')
         state_dict = checkpoint['model']    
         model.load_state_dict(state_dict)    
         
         optimizer.load_state_dict(checkpoint['optimizer'])
         start_epoch = checkpoint['epoch']+1                
-        print('resume checkpoint from %s'%args.checkpoint)    
+        print('resume checkpoint from %s' % args.recogniser_checkpoint)
     
     model_without_ddp = model
     if args.distributed:
